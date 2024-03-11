@@ -1,15 +1,18 @@
 import logging
 
 import ovh
+from ovh import ConsumerKeyRequest
 
 
 class Account:
-    logger: logging.Logger
-    client: ovh.Client
+    _logger: logging.Logger
+    _client: ovh.Client
+    _consumer_key_request: ConsumerKeyRequest | None
 
     def __init__(self):
-        self.logger = logging.getLogger("Account")
-        self.client = ovh.Client()
+        self._logger = logging.getLogger("Account")
+        self._client = ovh.Client()
+        self._consumer_key_request = None
 
     @classmethod
     def register_endpoints(cls, ckr: ConsumerKeyRequest) -> None:
@@ -29,4 +32,4 @@ class Account:
 
     def greetings(self):
         """ Log a greeting message """
-        self.logger.info("Welcome %s", self.client.get('/me')['firstname'])
+        self._logger.info("Welcome %s", self._client.get('/me')['firstname'])
