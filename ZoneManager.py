@@ -74,13 +74,11 @@ class ZoneManager:
                 for entry in super_groups[domain][sub_domain]:
                     field_type = entry['fieldType']
                     target = entry['target']
-                    print(f'      {field_type} => {target}')
-            print()
                     self.logger.info('      %s => %s', field_type, target)
+            self.logger.info('')
 
-        print()
-        print('Other domains')
         self.logger.info('')
+        self.logger.info('Other domains')
         for domain in keys:
             if len(domain) == 0:
                 self.logger.info("(empty)")
