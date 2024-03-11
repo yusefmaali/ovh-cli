@@ -63,8 +63,8 @@ class ZoneManager:
             keys.remove(api_key)
             super_groups[key][api_key] = self.domains.get(api_key)
 
-        super_group_keys = super_groups.keys()
-        sorted(super_group_keys)
+        super_group_keys = list(super_groups.keys())
+        super_group_keys.sort()
 
         self.logger.info('Grouped domains (%d items)', len(super_group_keys))
         for domain in super_group_keys:
@@ -177,4 +177,4 @@ class ZoneManager:
             })
 
         for domain in self.domains:
-            sorted(self.domains[domain], key=lambda o: o['fieldType'])
+            self.domains[domain].sort(key=lambda o: o['fieldType'])
