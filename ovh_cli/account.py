@@ -4,6 +4,7 @@ import ovh
 
 
 class Account:
+    logger: logging.Logger
     client: ovh.Client
 
     def __init__(self):
