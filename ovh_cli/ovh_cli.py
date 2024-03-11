@@ -7,13 +7,15 @@ from ovh_cli.zone_manager import ZoneManager
 
 
 class OvhCli:
-    logger: logging.Logger
-    args: argparse.Namespace
-    account_subparser: argparse.ArgumentParser
-    domain_subparser: argparse.ArgumentParser
+    _logger: logging.Logger
+    _args: argparse.Namespace
+    _account_subparser: argparse.ArgumentParser
+    _domain_subparser: argparse.ArgumentParser
+    _config_path: str | None
 
     def __init__(self):
-        self.logger = logging.getLogger("OvhCli")
+        self._logger = logging.getLogger("OvhCli")
+        self._config_path = None
 
     @classmethod
     def run_cli(cls) -> bool:
@@ -40,24 +42,25 @@ class OvhCli:
         self._configure_account_parsers(sp)
         self._configure_domain_parsers(sp)
 
-        self.args = parser.parse_args()
+        self._args = parser.parse_args()
 
-        if self.args.command is None:
+        if self._args.command is None:
             parser.print_help()
+            return
 
-        if self.args.command == 'domain':
+        if self._args.command == 'domain':
             self._execute_domain()
 
-        if self.args.command == 'account':
+        if self._args.command == 'account':
             self._execute_account()
 
-        self.domain_subparser = sub_parsers.add_parser(
     def _configure_domain_parsers(self, sub_parsers) -> None:
+        self._domain_subparser = sub_parsers.add_parser(
             'domain',
             help='Manage domain\'s records',
             description='Manage domain\'s records',
             epilog='Run \'ovh-cli domain COMMAND --help\' for more information on a command.')
-        sub_parser = self.domain_subparser.add_subparsers(
+        sub_parser = self._domain_subparser.add_subparsers(
             title='Available commands',
             metavar='COMMAND',
             dest='domain_command')
@@ -81,13 +84,13 @@ class OvhCli:
         list_parser = sub_parser.add_parser('list', help='List all zone\'s records')
         list_parser.add_argument('-z', '--zone', type=str, help='zone name', required=True)
 
-        self.account_subparser = sub_parsers.add_parser(
     def _configure_account_parsers(self, sub_parsers) -> None:
+        self._account_subparser = sub_parsers.add_parser(
             'account',
             help='Manage the account',
             description='Manage the account',
             epilog='Run \'ovh-cli account COMMAND --help\' for more information on a command.')
-        sub_parser = self.account_subparser.add_subparsers(
+        sub_parser = self._account_subparser.add_subparsers(
             title='Available commands',
             metavar='COMMAND',
             dest='account_command')
@@ -95,48 +98,48 @@ class OvhCli:
         sub_parser.add_parser('greetings', help='Log a greeting message')
         sub_parser.add_parser('register', help='Register new consumer_key')
 
-        if self.args.domain_command is None:
-            self.domain_subparser.print_help()
     def _execute_domain(self) -> None:
+        if self._args.domain_command is None:
+            self._domain_subparser.print_help()
             return
 
-        if self.args.domain_command == 'add' or self.args.domain_command == 'delete':
-            zone_manager = ZoneManager(self.args.zone)
+        if self._args.domain_command == 'add' or self._args.domain_command == 'delete':
+            zone_manager = ZoneManager(self._args.zone, config_file=self._args.config)
             ipv4_address, ipv6_address = None, None
-            if self.args.ipv4 is not None:
-                ipv4_address = self.args.ipv4
-            if self.args.ipv6 is not None:
-                ipv6_address = self.args.ipv6
-            if self.args.hostname is not None:
-                (ipv4_address, ipv6_address) = zone_manager.get_hostname_ips(self.args.hostname)
-                self.logger.info('Hostname: %s, ipv4: %s, ipv6: %s',
-                                 self.args.hostname, ipv4_address, ipv6_address)
+            if self._args.ipv4 is not None:
+                ipv4_address = self._args.ipv4
+            if self._args.ipv6 is not None:
+                ipv6_address = self._args.ipv6
+            if self._args.hostname is not None:
+                (ipv4_address, ipv6_address) = zone_manager.get_hostname_ips(self._args.hostname)
+                self._logger.info('Hostname: %s, ipv4: %s, ipv6: %s',
+                                  self._args.hostname, ipv4_address, ipv6_address)
 
-            if self.args.domain_command == 'add':
-                self.logger.info('Adding domain: %s, ipv4: %s, ipv6: %s, api: %s',
-                                 self.args.domain, ipv4_address, ipv6_address, self.args.api)
-                zone_manager.add_domain(self.args.domain, ipv4_address, ipv6_address, self.args.api)
+            if self._args.domain_command == 'add':
+                self._logger.info('Adding domain: %s, ipv4: %s, ipv6: %s, api: %s',
+                                  self._args.domain, ipv4_address, ipv6_address, self._args.api)
+                zone_manager.add_domain(self._args.domain, ipv4_address, ipv6_address, self._args.api)
 
-            if self.args.domain_command == 'delete':
-                self.logger.info('Deleting domain: %s, ipv4: %s, ipv6: %s, api: %s',
-                                 self.args.domain, ipv4_address, ipv6_address, self.args.api)
-                zone_manager.delete_domain(self.args.domain, ipv4_address, ipv6_address, self.args.api)
+            if self._args.domain_command == 'delete':
+                self._logger.info('Deleting domain: %s, ipv4: %s, ipv6: %s, api: %s',
+                                  self._args.domain, ipv4_address, ipv6_address, self._args.api)
+                zone_manager.delete_domain(self._args.domain, ipv4_address, ipv6_address, self._args.api)
 
-        if self.args.domain_command == 'list':
-            zone_manager = ZoneManager(self.args.zone)
+        if self._args.domain_command == 'list':
+            zone_manager = ZoneManager(self._args.zone, config_file=self._args.config)
             zone_manager.dump_all_domains()
 
-        if self.args.account_command is None:
-            self.account_subparser.print_help()
     def _execute_account(self) -> None:
+        if self._args.account_command is None:
+            self._account_subparser.print_help()
             return
 
-        if self.args.account_command == 'greetings':
-            account = Account()
+        if self._args.account_command == 'greetings':
+            account = Account(config_file=self._args.config)
             account.greetings()
 
-        if self.args.account_command == 'register':
-            account = Account()
+        if self._args.account_command == 'register':
+            account = Account(config_file=self._args.config)
             account.consumer_key_create_request()
 
             ckr = account.consumer_key_request
@@ -145,10 +148,10 @@ class OvhCli:
 
             validation_url, consumer_key = account.consumer_key_complete_registration()
 
-            self.logger.info('Please visit %s to authenticate the request', validation_url)
+            self._logger.info('Please visit %s to authenticate the request', validation_url)
             input('Press Enter to continue...')
-            self.logger.info('The consumerKey is: %s', consumer_key)
-            self.logger.info('Follow the README instructions and store it in the ovh.conf file')
+            self._logger.info('The consumerKey is: %s', consumer_key)
+            self._logger.info('Follow the README instructions and store it in the ovh.conf file')
 
             account.greetings()
 
