@@ -10,6 +10,11 @@ class ZoneManager:
     _zone_name: str
     _domains: dict
 
+    @classmethod
+    def register_endpoints(cls, ck: ConsumerKeyRequest) -> None:
+        ck.add_rules(['GET', 'POST'], '/domain/zone/*/record')
+        ck.add_rules(['GET', 'DELETE'], '/domain/zone/*/record/*')
+        ck.add_rule('POST', '/domain/zone/*/refresh')
 
     def __init__(self, zone_name: str):
         self._logger = logging.getLogger("ZoneManager")

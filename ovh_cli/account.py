@@ -11,9 +11,9 @@ class Account:
         self.logger = logging.getLogger("Account")
         self.client = ovh.Client()
 
-    def register_consumer_key(self):
-        ck = self.client.new_consumer_key_request()
-        ck.add_recursive_rules(ovh.API_READ_WRITE, '/')  # FIXME
+    @classmethod
+    def register_endpoints(cls, ckr: ConsumerKeyRequest) -> None:
+        ckr.add_rule('GET', '/me')
 
         # Request token
         validation = ck.request()
