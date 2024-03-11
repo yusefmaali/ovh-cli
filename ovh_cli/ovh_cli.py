@@ -51,8 +51,8 @@ class OvhCli:
         if self.args.command == 'account':
             self._execute_account()
 
-    def _configure_domain_parsers(self, sub_parsers):
         self.domain_subparser = sub_parsers.add_parser(
+    def _configure_domain_parsers(self, sub_parsers) -> None:
             'domain',
             help='Manage domain\'s records',
             description='Manage domain\'s records',
@@ -81,8 +81,8 @@ class OvhCli:
         list_parser = sub_parser.add_parser('list', help='List all zone\'s records')
         list_parser.add_argument('-z', '--zone', type=str, help='zone name', required=True)
 
-    def _configure_account_parsers(self, sub_parsers):
         self.account_subparser = sub_parsers.add_parser(
+    def _configure_account_parsers(self, sub_parsers) -> None:
             'account',
             help='Manage the account',
             description='Manage the account',
@@ -95,9 +95,9 @@ class OvhCli:
         sub_parser.add_parser('greetings', help='Log a greeting message')
         sub_parser.add_parser('register', help='Register new consumer_key')
 
-    def _execute_domain(self):
         if self.args.domain_command is None:
             self.domain_subparser.print_help()
+    def _execute_domain(self) -> None:
             return
 
         if self.args.domain_command == 'add' or self.args.domain_command == 'delete':
@@ -126,9 +126,9 @@ class OvhCli:
             zone_manager = ZoneManager(self.args.zone)
             zone_manager.dump_all_domains()
 
-    def _execute_account(self):
         if self.args.account_command is None:
             self.account_subparser.print_help()
+    def _execute_account(self) -> None:
             return
 
         if self.args.account_command == 'greetings':

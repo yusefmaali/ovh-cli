@@ -47,7 +47,7 @@ class ZoneManager:
 
         return ipv4_address, ipv6_address
 
-    def dump_all_domains(self):
+    def dump_all_domains(self) -> None:
         """ Dump all domains"""
         keys = list(self._domains.keys())
 
@@ -100,7 +100,7 @@ class ZoneManager:
 
             self._logger.info('')
 
-    def add_domain(self, domain_name: str, ipv4_address: str, ipv6_address: str, add_api_domain: bool):
+    def add_domain(self, domain_name: str, ipv4_address: str, ipv6_address: str, add_api_domain: bool) -> None:
         """ Add a test domain
         :param domain_name
         :param ipv4_address
@@ -115,7 +115,7 @@ class ZoneManager:
 
         self._client.post(f'/domain/zone/{self._zone_name}/refresh')
 
-    def _add_domain_action(self, domain_name: str, ipv4_address: str, ipv6_address: str):
+    def _add_domain_action(self, domain_name: str, ipv4_address: str, ipv6_address: str) -> None:
         """ Call the action to add a domain.
          Internal method
         :param domain_name
@@ -135,7 +135,7 @@ class ZoneManager:
             self._client.post(f'/domain/zone/{self._zone_name}/record',
                               fieldType='AAAA', subDomain=domain_name, target=ipv6_address)
 
-    def delete_domain(self, domain_name: str, ipv4_address: str, ipv6_address: str, delete_api_domain: bool):
+    def delete_domain(self, domain_name: str, ipv4_address: str, ipv6_address: str, delete_api_domain: bool) -> None:
         """ Delete a domain
         :param domain_name
         :param ipv4_address
@@ -150,7 +150,7 @@ class ZoneManager:
 
         self._client.post(f'/domain/zone/{self._zone_name}/refresh')
 
-    def _delete_domain_action(self, domain_name: str, ipv4_address: str, ipv6_address: str):
+    def _delete_domain_action(self, domain_name: str, ipv4_address: str, ipv6_address: str) -> None:
         """ Call the action to delete a domain.
          Internal method
         :param domain_name
@@ -169,7 +169,7 @@ class ZoneManager:
                 self._logger.info('Deleting domain (%s) %s, id: %s', field_type, domain_name, domain_id)
                 self._client.delete(f'/domain/zone/{self._zone_name}/record/{domain_id}')
 
-    def _cache_all_domains(self):
+    def _cache_all_domains(self) -> None:
         """ Fetch all domains"""
         response = self._client.get(f'/domain/zone/{self._zone_name}/record')
 

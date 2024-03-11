@@ -9,7 +9,7 @@ class Account:
     _client: ovh.Client
     _consumer_key_request: ConsumerKeyRequest | None
 
-    def __init__(self):
+    def __init__(self, config_file: str = None) -> None:
         self._logger = logging.getLogger("Account")
         self._client = ovh.Client()
         self._consumer_key_request = None
@@ -19,7 +19,7 @@ class Account:
         ckr.add_rule('GET', '/me')
 
     @property
-    def consumer_key_request(self):
+    def consumer_key_request(self) -> ConsumerKeyRequest:
         return self._consumer_key_request
 
     def consumer_key_create_request(self) -> None:
@@ -29,6 +29,6 @@ class Account:
         validation = self.consumer_key_request.request()
         return validation['validationUrl'], validation['consumerKey']
 
-    def greetings(self):
+    def greetings(self) -> None:
         """ Log a greeting message """
         self._logger.info("Welcome %s", self._client.get('/me')['firstname'])
