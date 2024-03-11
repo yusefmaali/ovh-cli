@@ -99,26 +99,33 @@ class ZoneManager:
         :param ipv6_address
         :param add_api_domain:
         """
-        if not self.domain_exists(domain_name):
-            print(f'Adding domain (A) {domain_name} => {ipv4_address}')
+        self.__add_domain_action(domain_name, ipv4_address, ipv6_address)
+
+        if add_api_domain:
+            api_domain_name = f'api.{domain_name}'
+            self.__add_domain_action(api_domain_name, ipv4_address, ipv6_address)
+
+        self.client.post(f'/domain/zone/{self.zone_name}/refresh')
+
+    def __add_domain_action(self, domain_name: str, ipv4_address: str, ipv6_address: str):
+        """ Call the action to add a domain.
+         Internal method
+        :param domain_name
+        :param ipv4_address
+        :param ipv6_address
+        """
+        if self.domain_exists(domain_name):
+            return
+
+        if ipv4_address is not None:
+            self.logger.info('Adding domain (A) %s => %s', domain_name, ipv4_address)
             self.client.post(f'/domain/zone/{self.zone_name}/record',
                              fieldType='A', subDomain=domain_name, target=ipv4_address)
 
-            print(f'Adding domain (AAAA) {domain_name} => {ipv6_address}')
+        if ipv6_address is not None:
+            self.logger.info('Adding domain (AAAA) %s => %s', domain_name, ipv6_address)
             self.client.post(f'/domain/zone/{self.zone_name}/record',
                              fieldType='AAAA', subDomain=domain_name, target=ipv6_address)
-
-        api_domain_name = f'api.{domain_name}'
-        if add_api_domain and not self.domain_exists(api_domain_name):
-            print(f'Adding domain (A) {api_domain_name} => {ipv4_address}')
-            self.client.post(f'/domain/zone/{self.zone_name}/record',
-                             fieldType='A', subDomain=api_domain_name, target=ipv4_address)
-
-            print(f'Adding domain (AAAA) {api_domain_name} => {ipv6_address}')
-            self.client.post(f'/domain/zone/{self.zone_name}/record',
-                             fieldType='AAAA', subDomain=api_domain_name, target=ipv6_address)
-
-        self.client.post(f'/domain/zone/{self.zone_name}/refresh')
 
     def delete_domain(self, domain_name: str, ipv4_address: str, ipv6_address: str, delete_api_domain: bool):
         """ Delete a domain
