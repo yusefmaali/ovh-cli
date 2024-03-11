@@ -160,6 +160,9 @@ class ZoneManager:
         :param ipv6_address
         """
         records = self.domains.get(domain_name)
+        if records is None:
+            return
+
         for record in records:
             field_type = record['fieldType']
             target = record['target']
