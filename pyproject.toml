@@ -3,7 +3,7 @@
     build-backend = "setuptools.build_meta"
 
 [project]
-    name = "yma-ovh-cli"
+    name = "ovh-cli-yma"
     version = "1.0.0"
     authors = [
         {name = "Yusef Maali", email = "contact@yusefmaali.net"}
