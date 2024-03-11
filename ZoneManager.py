@@ -13,26 +13,6 @@ class ZoneManager:
 
         self.__cache_all_domains()
 
-    def register_consumer_key(self):
-        ck = self.client.new_consumer_key_request()
-        ck.add_recursive_rules(ovh.API_READ_WRITE, '/')  # FIXME
-
-        # Request token
-        validation = ck.request()
-        validation_url = validation['validationUrl']
-
-        print(f"Please visit {validation_url} to authenticate")
-        input("Press Enter to continue...")
-
-        self.print_greetings()
-
-        consumer_key = validation['consumerKey']
-        print(f"Keep note of the consumerKey is '{consumer_key}'")
-
-    def print_greetings(self):
-        """ Print a greeting message (just to test the connection) """
-        print("Welcome", self.client.get('/me')['firstname'])
-
     def domain_exists(self, domain_name: str) -> bool:
         """ Check if a domain exists in the zone """
         return domain_name in self.domains
