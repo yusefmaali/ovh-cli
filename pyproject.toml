@@ -1,0 +1,47 @@
+[build-system]
+    requires = ["setuptools"]
+    build-backend = "setuptools.build_meta"
+
+[project]
+    name = "ovh-cli"
+    version = "1.0.0"
+    authors = [
+        {name = "Yusef Maali", email = "contact@yusefmaali.net"}
+    ]
+    description = "An ovh command line tool"
+    readme = "README.rst"
+    requires-python = ">=3.7"
+    keywords = [
+        "ovh",
+        "api",
+        "cli",
+        "tool",
+        "wrapper"
+    ]
+    license = {text = "MIT"}
+    classifiers = [
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Development Status :: 5 - Production/Stable",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Natural Language :: English",
+    ]
+    dependencies = [
+        "ovh ~= 1.1.0"
+    ]
+
+[project.urls]
+    homepage = "https://github.com/yusefmaali/ovh-cli"
+    repository = "https://github.com/yusefmaali/ovh-cli"
+    changelog = "https://github.com/yusefmaali/ovh-cli/blob/master/CHANGELOG.rst"
+    download = "https://github.com/yusefmaali/ovh-cli/tarball/1.0.0"
+
+[project.scripts]
+    ovh-cli = "ovh_cli:run_cli"
