@@ -16,9 +16,9 @@ class ZoneManager:
         ck.add_rules(['GET', 'DELETE'], '/domain/zone/*/record/*')
         ck.add_rule('POST', '/domain/zone/*/refresh')
 
-    def __init__(self, zone_name: str):
+    def __init__(self, zone_name: str, config_file: str = None) -> None:
         self._logger = logging.getLogger("ZoneManager")
-        self._client = ovh.Client()
+        self._client = ovh.Client(config_file=config_file)
         self._zone_name = zone_name
         self._domains = {}
 

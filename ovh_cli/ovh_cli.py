@@ -34,6 +34,9 @@ class OvhCli:
         parser = argparse.ArgumentParser(
             description='Command line interface to interact with OVH',
             epilog='Run \'ovh-cli COMMAND --help\' for more information on a command.')
+
+        parser.add_argument('-c', '--config', type=str, help='path to ovh.conf file')
+
         sp = parser.add_subparsers(
             title='Available commands',
             metavar='COMMAND',

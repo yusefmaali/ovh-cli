@@ -11,7 +11,7 @@ class Account:
 
     def __init__(self, config_file: str = None) -> None:
         self._logger = logging.getLogger("Account")
-        self._client = ovh.Client()
+        self._client = ovh.Client(config_file=config_file)
         self._consumer_key_request = None
 
     @classmethod
