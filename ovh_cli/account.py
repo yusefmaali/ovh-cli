@@ -18,17 +18,16 @@ class Account:
     def register_endpoints(cls, ckr: ConsumerKeyRequest) -> None:
         ckr.add_rule('GET', '/me')
 
-        # Request token
-        validation = ck.request()
-        validation_url = validation['validationUrl']
+    @property
+    def consumer_key_request(self):
+        return self._consumer_key_request
 
-        print(f"Please visit {validation_url} to authenticate")
-        input("Press Enter to continue...")
+    def consumer_key_create_request(self) -> None:
+        self._consumer_key_request = self._client.new_consumer_key_request()
 
-        self.greetings()
-
-        consumer_key = validation['consumerKey']
-        print(f"Keep note of the consumerKey is '{consumer_key}'")
+    def consumer_key_complete_registration(self) -> (str, str):
+        validation = self.consumer_key_request.request()
+        return validation['validationUrl'], validation['consumerKey']
 
     def greetings(self):
         """ Log a greeting message """

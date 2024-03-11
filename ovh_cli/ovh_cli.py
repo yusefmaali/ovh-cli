@@ -93,6 +93,7 @@ class OvhCli:
             dest='account_command')
 
         sub_parser.add_parser('greetings', help='Log a greeting message')
+        sub_parser.add_parser('register', help='Register new consumer_key')
 
     def _execute_domain(self):
         if self.args.domain_command is None:
@@ -132,6 +133,23 @@ class OvhCli:
 
         if self.args.account_command == 'greetings':
             account = Account()
+            account.greetings()
+
+        if self.args.account_command == 'register':
+            account = Account()
+            account.consumer_key_create_request()
+
+            ckr = account.consumer_key_request
+            Account.register_endpoints(ckr)
+            ZoneManager.register_endpoints(ckr)
+
+            validation_url, consumer_key = account.consumer_key_complete_registration()
+
+            self.logger.info('Please visit %s to authenticate the request', validation_url)
+            input('Press Enter to continue...')
+            self.logger.info('The consumerKey is: %s', consumer_key)
+            self.logger.info('Follow the README instructions and store it in the ovh.conf file')
+
             account.greetings()
 
 
