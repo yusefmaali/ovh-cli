@@ -4,6 +4,7 @@ import ovh
 
 
 class ZoneManager:
+    logger: logging.Logger
     client: ovh.Client
     zone_name: str
     domains: dict
@@ -14,7 +15,7 @@ class ZoneManager:
         self.zone_name = zone_name
         self.domains = {}
 
-        self.__cache_all_domains()
+        self._cache_all_domains()
 
     def domain_exists(self, domain_name: str) -> bool:
         """ Check if a domain exists in the zone """
@@ -99,15 +100,15 @@ class ZoneManager:
         :param ipv6_address
         :param add_api_domain:
         """
-        self.__add_domain_action(domain_name, ipv4_address, ipv6_address)
+        self._add_domain_action(domain_name, ipv4_address, ipv6_address)
 
         if add_api_domain:
             api_domain_name = f'api.{domain_name}'
-            self.__add_domain_action(api_domain_name, ipv4_address, ipv6_address)
+            self._add_domain_action(api_domain_name, ipv4_address, ipv6_address)
 
         self.client.post(f'/domain/zone/{self.zone_name}/refresh')
 
-    def __add_domain_action(self, domain_name: str, ipv4_address: str, ipv6_address: str):
+    def _add_domain_action(self, domain_name: str, ipv4_address: str, ipv6_address: str):
         """ Call the action to add a domain.
          Internal method
         :param domain_name
@@ -134,15 +135,15 @@ class ZoneManager:
         :param ipv6_address
         :param delete_api_domain:
         """
-        self.__delete_domain_action(domain_name, ipv4_address, ipv6_address)
+        self._delete_domain_action(domain_name, ipv4_address, ipv6_address)
 
         if delete_api_domain:
             api_domain_name = f'api.{domain_name}'
-            self.__delete_domain_action(api_domain_name, ipv4_address, ipv6_address)
+            self._delete_domain_action(api_domain_name, ipv4_address, ipv6_address)
 
         self.client.post(f'/domain/zone/{self.zone_name}/refresh')
 
-    def __delete_domain_action(self, domain_name: str, ipv4_address: str, ipv6_address: str):
+    def _delete_domain_action(self, domain_name: str, ipv4_address: str, ipv6_address: str):
         """ Call the action to delete a domain.
          Internal method
         :param domain_name
@@ -161,7 +162,7 @@ class ZoneManager:
                 self.logger.info('Deleting domain (%s) %s, id: %s', field_type, domain_name, domain_id)
                 self.client.delete(f'/domain/zone/{self.zone_name}/record/{domain_id}')
 
-    def __cache_all_domains(self):
+    def _cache_all_domains(self):
         """ Fetch all domains"""
         response = self.client.get(f'/domain/zone/{self.zone_name}/record')
 
