@@ -1,3 +1,5 @@
+import logging
+
 import ovh
 
 
@@ -7,6 +9,7 @@ class ZoneManager:
     domains: dict
 
     def __init__(self, zone_name: str):
+        self.logger = logging.getLogger("ZoneManager")
         self.client = ovh.Client()
         self.zone_name = zone_name
         self.domains = {}
@@ -63,31 +66,33 @@ class ZoneManager:
         super_group_keys = super_groups.keys()
         sorted(super_group_keys)
 
-        print(f'Mediscopio related domains ({len(super_group_keys)} items)')
+        self.logger.info('Grouped domains (%d items)', len(super_group_keys))
         for domain in super_group_keys:
-            print(f'{str(domain).upper()}')
+            self.logger.info(str(domain).upper())
             for sub_domain in super_groups[domain]:
-                print(f'   {sub_domain}')
+                self.logger.info('   %s', sub_domain)
                 for entry in super_groups[domain][sub_domain]:
                     field_type = entry['fieldType']
                     target = entry['target']
                     print(f'      {field_type} => {target}')
             print()
+                    self.logger.info('      %s => %s', field_type, target)
 
         print()
         print('Other domains')
+        self.logger.info('')
         for domain in keys:
             if len(domain) == 0:
-                print("(empty)")
+                self.logger.info("(empty)")
             else:
-                print(domain)
+                self.logger.info(domain)
 
             for entry in self.domains[domain]:
                 field_type = entry['fieldType']
                 target = entry['target']
-                print(f'   {field_type} => {target}')
+                self.logger.info('      %s => %s', field_type, target)
 
-            print()
+            self.logger.info('')
 
     def add_domain(self, domain_name: str, ipv4_address: str, ipv6_address: str, add_api_domain: bool):
         """ Add a test domain
@@ -148,7 +153,7 @@ class ZoneManager:
             target = record['target']
             domain_id = record['domainId']
             if (field_type == 'A' and target == ipv4_address) or (field_type == 'AAAA' and target == ipv6_address):
-                print(f'Deleting domain ({field_type}) {domain_name}, id: {domain_id}')
+                self.logger.info('Deleting domain (%s) %s, id: %s', field_type, domain_name, domain_id)
                 self.client.delete(f'/domain/zone/{self.zone_name}/record/{domain_id}')
 
     def __cache_all_domains(self):
