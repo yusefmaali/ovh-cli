@@ -16,7 +16,7 @@ Configuration Quick Steps
 -------------------------
 
 1. Create an Ovh application
-************************
+****************************
 
 Create an Ovh Application to get the ``application_key`` and the ``application_secret`` (`create-an-application <https://github.com/ovh/python-ovh?tab=readme-ov-file#1-create-an-application>`_).
 
