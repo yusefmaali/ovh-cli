@@ -3,8 +3,8 @@ import argparse
 import logging
 import sys
 
-from Account import Account
-from ZoneManager import ZoneManager
+from core.Account import Account
+from core.ZoneManager import ZoneManager
 
 
 def run():
